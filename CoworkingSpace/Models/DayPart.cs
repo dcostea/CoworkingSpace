@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CoworkingSpace.Models
 {
     public enum DayPart
     {
-        [Description("9am to 9 pm")]
+        [Display(Name = "9am to 9pm")]
         NineToNine = 0,
 
-        [Description("24/7")]
+        [Display(Name = "24/7")]
         TwentyFourBySeven = 1
     }
 }

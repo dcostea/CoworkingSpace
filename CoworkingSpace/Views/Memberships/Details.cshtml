@@ -1,0 +1,72 @@
+﻿@model CoworkingSpace.Models.Membership
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Membership</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Frequency)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Frequency)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Spot)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Spot)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SpotSeats)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SpotSeats)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.NoOfDays)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NoOfDays)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DayPart)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DayPart)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WeekPart)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WeekPart)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Benefits)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Benefits)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.MembershipId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

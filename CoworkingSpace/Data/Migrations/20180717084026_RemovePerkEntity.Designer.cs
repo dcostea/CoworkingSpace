@@ -4,14 +4,16 @@ using CoworkingSpace.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoworkingSpace.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180717084026_RemovePerkEntity")]
+    partial class RemovePerkEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +32,6 @@ namespace CoworkingSpace.Data.Migrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(200);
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(13);
 
                     b.HasKey("CustomerId");
 
@@ -88,10 +87,6 @@ namespace CoworkingSpace.Data.Migrations
                     b.Property<DateTime>("StartDate");
 
                     b.HasKey("ReservationId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("MembershipId");
 
                     b.ToTable("Reservations");
                 });
@@ -259,19 +254,6 @@ namespace CoworkingSpace.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("CoworkingSpace.Models.Reservation", b =>
-                {
-                    b.HasOne("CoworkingSpace.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("CoworkingSpace.Models.Membership", "Membership")
-                        .WithMany()
-                        .HasForeignKey("MembershipId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

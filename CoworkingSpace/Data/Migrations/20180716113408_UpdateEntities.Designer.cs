@@ -4,14 +4,16 @@ using CoworkingSpace.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoworkingSpace.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180716113408_UpdateEntities")]
+    partial class UpdateEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,14 +27,9 @@ namespace CoworkingSpace.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("LegalId")
-                        .HasMaxLength(13);
+                    b.Property<string>("LegalId");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(13);
+                    b.Property<string>("Name");
 
                     b.HasKey("CustomerId");
 
@@ -44,9 +41,6 @@ namespace CoworkingSpace.Data.Migrations
                     b.Property<int>("MembershipId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Benefits")
-                        .HasMaxLength(1000);
 
                     b.Property<int>("DayPart");
 
@@ -60,14 +54,28 @@ namespace CoworkingSpace.Data.Migrations
 
                     b.Property<int?>("SpotSeats");
 
-                    b.Property<string>("Title")
-                        .HasMaxLength(100);
+                    b.Property<string>("Title");
 
                     b.Property<int>("WeekPart");
 
                     b.HasKey("MembershipId");
 
                     b.ToTable("Memberships");
+                });
+
+            modelBuilder.Entity("CoworkingSpace.Models.Perk", b =>
+                {
+                    b.Property<int>("PerkId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("PerkId");
+
+                    b.ToTable("Perks");
                 });
 
             modelBuilder.Entity("CoworkingSpace.Models.Reservation", b =>
@@ -78,8 +86,7 @@ namespace CoworkingSpace.Data.Migrations
 
                     b.Property<int>("CustomerId");
 
-                    b.Property<string>("Details")
-                        .HasMaxLength(1000);
+                    b.Property<string>("Details");
 
                     b.Property<DateTime>("EndDate");
 
@@ -88,10 +95,6 @@ namespace CoworkingSpace.Data.Migrations
                     b.Property<DateTime>("StartDate");
 
                     b.HasKey("ReservationId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("MembershipId");
 
                     b.ToTable("Reservations");
                 });
@@ -259,19 +262,6 @@ namespace CoworkingSpace.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("CoworkingSpace.Models.Reservation", b =>
-                {
-                    b.HasOne("CoworkingSpace.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("CoworkingSpace.Models.Membership", "Membership")
-                        .WithMany()
-                        .HasForeignKey("MembershipId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

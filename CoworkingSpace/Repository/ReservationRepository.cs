@@ -17,6 +17,10 @@ namespace CoworkingSpace.Repository
             _context = context;
         }
 
+        public ReservationRepository()
+        {
+        }
+
         public void Add(Reservation item)
         {
             throw new NotImplementedException();

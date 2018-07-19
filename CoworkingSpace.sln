@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoworkingSpace", "CoworkingSpace\CoworkingSpace.csproj", "{224A0E60-99DE-4689-9564-78401D1A3D6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoworkingSpace", "CoworkingSpace\CoworkingSpace.csproj", "{224A0E60-99DE-4689-9564-78401D1A3D6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestCoworking", "UnitTestCoworking\UnitTestCoworking.csproj", "{E532DCE6-5A12-4BA2-B8DA-6BB06D9CE6D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{224A0E60-99DE-4689-9564-78401D1A3D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{224A0E60-99DE-4689-9564-78401D1A3D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{224A0E60-99DE-4689-9564-78401D1A3D6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E532DCE6-5A12-4BA2-B8DA-6BB06D9CE6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E532DCE6-5A12-4BA2-B8DA-6BB06D9CE6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E532DCE6-5A12-4BA2-B8DA-6BB06D9CE6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E532DCE6-5A12-4BA2-B8DA-6BB06D9CE6D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

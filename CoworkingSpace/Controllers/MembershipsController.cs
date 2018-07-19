@@ -7,22 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoworkingSpace.Data;
 using CoworkingSpace.Models;
+using CoworkingSpace.Repository;
 
 namespace CoworkingSpace.Controllers
 {
     public class MembershipsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMembershipRepository _membershipRepository;
 
-        public MembershipsController(ApplicationDbContext context)
+        public MembershipsController(IMembershipRepository membershipRepository)
         {
-            _context = context;
+            _membershipRepository = membershipRepository;
         }
 
         // GET: Memberships
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Memberships.ToListAsync());
+            return View(await _membershipRepository.GetAllAsync());
         }
 
         // GET: Memberships/Details/5
@@ -33,8 +34,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var membership = await _context.Memberships
-                .FirstOrDefaultAsync(m => m.MembershipId == id);
+            var membership = await _membershipRepository.FindAsync(id.Value);
             if (membership == null)
             {
                 return NotFound();
@@ -58,8 +58,7 @@ namespace CoworkingSpace.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(membership);
-                await _context.SaveChangesAsync();
+                await _membershipRepository.AddAsync(membership);
                 return RedirectToAction(nameof(Index));
             }
             return View(membership);
@@ -73,7 +72,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var membership = await _context.Memberships.FindAsync(id);
+            var membership = await _membershipRepository.FindAsync(id.Value);
             if (membership == null)
             {
                 return NotFound();
@@ -97,12 +96,11 @@ namespace CoworkingSpace.Controllers
             {
                 try
                 {
-                    _context.Update(membership);
-                    await _context.SaveChangesAsync();
+                    await _membershipRepository.UpdateAsync(membership);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MembershipExists(membership.MembershipId))
+                    if (!_membershipRepository.MembershipExists(membership.MembershipId))
                     {
                         return NotFound();
                     }
@@ -124,8 +122,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var membership = await _context.Memberships
-                .FirstOrDefaultAsync(m => m.MembershipId == id);
+            var membership = await _membershipRepository.FindAsync(id.Value);
             if (membership == null)
             {
                 return NotFound();
@@ -139,15 +136,9 @@ namespace CoworkingSpace.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var membership = await _context.Memberships.FindAsync(id);
-            _context.Memberships.Remove(membership);
-            await _context.SaveChangesAsync();
+            var membership = await _membershipRepository.FindAsync(id);
+            await _membershipRepository.RemoveAsync(membership);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool MembershipExists(int id)
-        {
-            return _context.Memberships.Any(e => e.MembershipId == id);
         }
     }
 }

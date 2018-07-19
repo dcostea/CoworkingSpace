@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using CoworkingSpace.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CoworkingSpace.Models;
+using CoworkingSpace.Repository;
 
 namespace CoworkingSpace
 {
@@ -39,6 +41,10 @@ namespace CoworkingSpace
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped(typeof(ICustomerRepository), typeof(CustomerRepository));
+            services.AddScoped(typeof(IMembershipRepository), typeof(MembershipRepository));
+            services.AddScoped(typeof(IReservationRepository), typeof(ReservationRepository));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

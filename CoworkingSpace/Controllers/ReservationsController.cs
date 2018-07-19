@@ -7,23 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoworkingSpace.Data;
 using CoworkingSpace.Models;
+using CoworkingSpace.Repository;
 
 namespace CoworkingSpace.Controllers
 {
     public class ReservationsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IReservationRepository _reservationRepository;
 
-        public ReservationsController(ApplicationDbContext context)
+        public ReservationsController(IReservationRepository reservationRepository)
         {
-            _context = context;
+            _reservationRepository = reservationRepository;
         }
 
         // GET: Reservations
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Reservations.Include(r => r.Customer).Include(r => r.Membership);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _reservationRepository.GetAllAsync());
         }
 
         // GET: Reservations/Details/5
@@ -34,10 +34,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservations
-                .Include(r => r.Customer)
-                .Include(r => r.Membership)
-                .FirstOrDefaultAsync(m => m.ReservationId == id);
+            var reservation = await _reservationRepository.FindAsync(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -49,8 +46,8 @@ namespace CoworkingSpace.Controllers
         // GET: Reservations/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Name");
-            ViewData["MembershipId"] = new SelectList(_context.Memberships, "MembershipId", "Title");
+            ViewData["CustomerId"] = new SelectList(_reservationRepository.GetAllCustomers(), "CustomerId", "Name");
+            ViewData["MembershipId"] = new SelectList(_reservationRepository.GetAllMemberships(), "MembershipId", "Title");
             return View();
         }
 
@@ -63,12 +60,11 @@ namespace CoworkingSpace.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(reservation);
-                await _context.SaveChangesAsync();
+                await _reservationRepository.AddAsync(reservation);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Name", reservation.CustomerId);
-            ViewData["MembershipId"] = new SelectList(_context.Memberships, "MembershipId", "Title", reservation.MembershipId);
+            ViewData["CustomerId"] = new SelectList(_reservationRepository.GetAllCustomers(), "CustomerId", "Name", reservation.CustomerId);
+            ViewData["MembershipId"] = new SelectList(_reservationRepository.GetAllMemberships(), "MembershipId", "Title", reservation.MembershipId);
             return View(reservation);
         }
 
@@ -80,13 +76,13 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation = await _reservationRepository.FindAsync(id.Value);
             if (reservation == null)
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Name", reservation.CustomerId);
-            ViewData["MembershipId"] = new SelectList(_context.Memberships, "MembershipId", "Title", reservation.MembershipId);
+            ViewData["CustomerId"] = new SelectList(_reservationRepository.GetAllCustomers(), "CustomerId", "Name", reservation.CustomerId);
+            ViewData["MembershipId"] = new SelectList(_reservationRepository.GetAllMemberships(), "MembershipId", "Title", reservation.MembershipId);
             return View(reservation);
         }
 
@@ -95,7 +91,7 @@ namespace CoworkingSpace.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MembershipId,CustomerId,Details,StartDate,EndDate")] Reservation reservation)
+        public async Task<IActionResult> Edit(int id, [Bind("ReservationId,MembershipId,CustomerId,Details,StartDate,EndDate")] Reservation reservation)
         {
             if (id != reservation.ReservationId)
             {
@@ -106,12 +102,11 @@ namespace CoworkingSpace.Controllers
             {
                 try
                 {
-                    _context.Update(reservation);
-                    await _context.SaveChangesAsync();
+                    await _reservationRepository.UpdateAsync(reservation);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(reservation.ReservationId))
+                    if (!_reservationRepository.ReservationExists(reservation.ReservationId))
                     {
                         return NotFound();
                     }
@@ -122,8 +117,8 @@ namespace CoworkingSpace.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Name", reservation.CustomerId);
-            ViewData["MembershipId"] = new SelectList(_context.Memberships, "MembershipId", "Title", reservation.MembershipId);
+            ViewData["CustomerId"] = new SelectList(_reservationRepository.GetAllCustomers(), "CustomerId", "Name", reservation.CustomerId);
+            ViewData["MembershipId"] = new SelectList(_reservationRepository.GetAllMemberships(), "MembershipId", "Title", reservation.MembershipId);
             return View(reservation);
         }
 
@@ -135,10 +130,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservations
-                .Include(r => r.Customer)
-                .Include(r => r.Membership)
-                .FirstOrDefaultAsync(m => m.ReservationId == id);
+            var reservation = await _reservationRepository.FindAsync(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -152,15 +144,9 @@ namespace CoworkingSpace.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
+            var reservation = await _reservationRepository.FindAsync(id);
+            await _reservationRepository.RemoveAsync(reservation);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ReservationExists(int id)
-        {
-            return _context.Reservations.Any(e => e.ReservationId == id);
         }
     }
 }

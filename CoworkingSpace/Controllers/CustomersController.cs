@@ -6,23 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoworkingSpace.Data;
+using CoworkingSpace.Repository;
 using CoworkingSpace.Models;
 
 namespace CoworkingSpace.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(ICustomerRepository customerRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
         }
 
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Customers.ToListAsync());
+            return View(await _customerRepository.GetAllAsync());
         }
 
         // GET: Customers/Details/5
@@ -33,8 +34,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer = await _customerRepository.FindAsync(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -58,8 +58,7 @@ namespace CoworkingSpace.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
+                await _customerRepository.AddAsync(customer);
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -73,7 +72,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _customerRepository.FindAsync(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -97,12 +96,11 @@ namespace CoworkingSpace.Controllers
             {
                 try
                 {
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
+                    await _customerRepository.UpdateAsync(customer);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.CustomerId))
+                    if (!_customerRepository.CustomerExists(customer.CustomerId))
                     {
                         return NotFound();
                     }
@@ -124,8 +122,7 @@ namespace CoworkingSpace.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer = await _customerRepository.FindAsync(id.Value);
             if (customer == null)
             {
                 return NotFound();
@@ -139,15 +136,9 @@ namespace CoworkingSpace.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
+            var customer = await _customerRepository.FindAsync(id);
+            await _customerRepository.RemoveAsync(customer);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.CustomerId == id);
         }
     }
 }

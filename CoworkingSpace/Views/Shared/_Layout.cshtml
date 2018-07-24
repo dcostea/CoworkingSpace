@@ -17,6 +17,25 @@
     </environment>
 </head>
 <body>
+
+    @{
+        var disabled = string.IsNullOrEmpty(Context.User.Identity.Name) ? "disabled" : "";
+    }
+    <div id="chat" style="position: fixed; right: 0; bottom: 0; width: 500px; height: 200px; background-color: #eeffee">
+        <div>
+            <input type="hidden" id="connectionId" />
+            <input type="text" style="width: 380px; margin: 5px;" @disabled id="messageInput" />
+            <input type="button" id="sendButton" @disabled value="Send" />
+            <input type="button" id="collapse" value="[]" />
+        </div>
+        <div style="background-color: #ddffdd; margin: 5px;">
+            <ul id="messagesList" style="height: 140px; overflow: auto; width: 100%;"></ul>
+        </div>
+    </div>
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/js/chat.js"></script>
+    @*<script src="~/js/es5-chat.js"></script>*@
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
